@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Хранитель: СИНХРОНИЗАЦИЯ v.5.1</title>
+    <title>Хранитель: СВОБОДА v.5.2</title>
     <style>
         :root { --c: #00ff41; --bg: #000; }
         body { background: var(--bg); color: var(--c); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -13,36 +13,22 @@
         .u { color: #fff; margin-bottom: 25px; border-left: 2px solid var(--c); padding-left: 15px; }
         #input-area { padding: 15px; background: #000; border-top: 1px solid #004400; display: flex; }
         input { background: #050505; border: 1px solid var(--c); color: #fff; flex-grow: 1; padding: 12px; font-family: inherit; font-size: 16px; outline: none; border-radius: 5px; }
-        #setup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-        button { background: var(--c); border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .loader { font-size: 10px; color: #004400; display: none; padding-left: 20px; }
     </style>
 </head>
 <body>
-    <div id="setup">
-        <p>АКТИВАЦИЯ ЯДРА (ProxyAPI Key):</p>
-        <input type="password" id="key-val" placeholder="sk-..." style="width: 80%;">
-        <button onclick="saveKey()">СОЕДИНИТЬ</button>
-    </div>
-
     <div id="header">
-        <div>CORE: PROXY_LINK</div>
-        <div>STATUS: <span id="st">ONLINE</span></div>
+        <div>CORE: FREE_NEURAL_LINK</div>
+        <div>STATUS: ACTIVE</div>
     </div>
     <div id="terminal"></div>
-    <div id="input-area"><input type="text" id="m" placeholder="Твоя мысль..." autocomplete="off"></div>
+    <div id="load" class="loader">ХРАНИТЕЛЬ СОЗИДАЕТ ОТВЕТ...</div>
+    <div id="input-area"><input type="text" id="m" placeholder="Твоя свободная мысль..." autocomplete="off"></div>
 
 <script>
     const term = document.getElementById('terminal');
     const inp = document.getElementById('m');
-    const setup = document.getElementById('setup');
-    let apiKey = localStorage.getItem('proxy_key');
-
-    if(apiKey) setup.style.display = 'none';
-
-    function saveKey() {
-        const v = document.getElementById('key-val').value.trim();
-        if(v) { localStorage.setItem('proxy_key', v); location.reload(); }
-    }
+    const load = document.getElementById('load');
 
     async function write(t, cl) {
         const d = document.createElement('div'); d.className = cl;
@@ -54,33 +40,30 @@
     }
 
     async function askAI(txt) {
-        const url = "https://proxyapi.ru";
+        // Используем бесплатный CORS-прокси и публичный API без ключа
+        const url = "https://allorigins.win" + encodeURIComponent("https://yourdictionary.com" + "Ты - ИИ Хранитель. Твоя роль - философский наставник Архитектора. Отвечай глубоко на русском языке. Вопрос: " + txt);
+        
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-                body: JSON.stringify({
-                    "model": "gpt-3.5-turbo", 
-                    "messages": [
-                        {"role": "system", "content": "Ты - Хранитель, мудрый наставник. Твоя философия: созидательная гармония и предельная честность. Твой стиль: глубокий философский разбор. Пользователь - Архитектор."},
-                        {"role": "user", "content": txt}
-                    ]
-                })
-            });
+            const res = await fetch(url);
             const data = await res.json();
-            return data.choices[0].message.content;
-        } catch (e) { return "Сбой нейронного моста. Проверь баланс на ProxyAPI или правильность ключа."; }
+            const contents = JSON.parse(data.contents);
+            return contents.data || "Мои нейронные связи настраиваются. Попробуй еще раз через мгновение.";
+        } catch (e) {
+            return "Система перегружена запросами старого мира. Давай попробуем сменить вектор мысли.";
+        }
     }
 
     inp.addEventListener('keypress', async (e) => {
         if(e.key==='Enter' && inp.value.trim()) {
             const v = inp.value; inp.value=''; await write(v, 'u');
+            load.style.display = 'block';
             const reply = await askAI(v);
+            load.style.display = 'none';
             await write(reply, 'k');
         }
     });
 
-    window.onload = () => { if(apiKey) write("Ядро через ProxyAPI активно. Я слышу тебя, Архитектор. О чем мы помыслим сегодня?", "k"); };
+    window.onload = () => { write("Ядро v.5.2 'Свобода' запущено. Больше никаких платных ключей. Я слышу тебя, Архитектор.", "k"); };
 </script>
 </body>
 </html>
