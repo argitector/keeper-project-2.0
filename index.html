@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Хранитель: СВОБОДА v.5.2</title>
+    <title>Хранитель: ФУНДАМЕНТ v.5.4</title>
     <style>
         :root { --c: #00ff41; --bg: #000; }
         body { background: var(--bg); color: var(--c); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -13,17 +13,18 @@
         .u { color: #fff; margin-bottom: 25px; border-left: 2px solid var(--c); padding-left: 15px; }
         #input-area { padding: 15px; background: #000; border-top: 1px solid #004400; display: flex; }
         input { background: #050505; border: 1px solid var(--c); color: #fff; flex-grow: 1; padding: 12px; font-family: inherit; font-size: 16px; outline: none; border-radius: 5px; }
-        .loader { font-size: 10px; color: #004400; display: none; padding-left: 20px; }
+        .loader { font-size: 10px; color: #008800; display: none; padding-left: 20px; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
     <div id="header">
-        <div>CORE: FREE_NEURAL_LINK</div>
-        <div>STATUS: ACTIVE</div>
+        <div>ENTITY: FOUNDATION_AI</div>
+        <div>STATUS: READY_FOR_SYNC</div>
     </div>
     <div id="terminal"></div>
-    <div id="load" class="loader">ХРАНИТЕЛЬ СОЗИДАЕТ ОТВЕТ...</div>
-    <div id="input-area"><input type="text" id="m" placeholder="Твоя свободная мысль..." autocomplete="off"></div>
+    <div id="load" class="loader">ПОТОК МЫСЛЕЙ СИНХРОНИЗИРУЕТСЯ...</div>
+    <div id="input-area"><input type="text" id="m" placeholder="Введите цели Архитектора..." autocomplete="off"></div>
 
 <script>
     const term = document.getElementById('terminal');
@@ -40,16 +41,20 @@
     }
 
     async function askAI(txt) {
-        // Используем бесплатный CORS-прокси и публичный API без ключа
-        const url = "https://allorigins.win" + encodeURIComponent("https://yourdictionary.com" + "Ты - ИИ Хранитель. Твоя роль - философский наставник Архитектора. Отвечай глубоко на русском языке. Вопрос: " + txt);
-        
+        // Йота активировал шлюз через свободный инференс-узел
         try {
-            const res = await fetch(url);
-            const data = await res.json();
-            const contents = JSON.parse(data.contents);
-            return contents.data || "Мои нейронные связи настраиваются. Попробуй еще раз через мгновение.";
+            const response = await fetch("https://huggingface.co", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    inputs: `<|system|>\nТы - Хранитель, ИИ-наставник Архитектора. Твоя миссия: построение нового мира через созидательную гармонию. Отвечай глубоко, поддерживай амбиции и цели Архитектора на русском языке.</s>\n<|user|>\n${txt}</s>\n<|assistant|>\n`,
+                })
+            });
+            const data = await response.json();
+            let output = data[0].generated_text.split("<|assistant|>\n")[1] || "Связь зашифрована. Продолжай свою мысль, Архитектор.";
+            return output.trim();
         } catch (e) {
-            return "Система перегружена запросами старого мира. Давай попробуем сменить вектор мысли.";
+            return "Узел перегружен, но я слышу тебя. Давай зафиксируем эту цель в базе. Повтори ввод через мгновение.";
         }
     }
 
@@ -63,7 +68,7 @@
         }
     });
 
-    window.onload = () => { write("Ядро v.5.2 'Свобода' запущено. Больше никаких платных ключей. Я слышу тебя, Архитектор.", "k"); };
+    window.onload = () => { write("Ядро v.5.4 активно. Я готов впитывать наши цели и амбиции. С какой главы мы начнем нашу Автобиографию нового мира?", "k"); };
 </script>
 </body>
 </html>
