@@ -45,7 +45,7 @@
     async function getAIResponse(userText) {
         // Йота активировал этот шлюз. Используем публичную модель без ключа для теста.
         try {
-            const response = await fetch("https://openrouter.ai", {
+            const response = await fetch("https://corsproxy.io", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
