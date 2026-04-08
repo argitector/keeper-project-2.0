@@ -3,46 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Хранитель: Кибер-Дерево</title>
-    <!-- Иконка для мобильных -->
+    <title>Хранитель: Живое Ядро</title>
     <link rel="apple-touch-icon" href="https://icons8.com">
     <style>
-        :root { --main: #00ff41; --bg: #050505; }
-        body { background: var(--bg); color: var(--main); font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        #header { padding: 10px; border-bottom: 1px solid #004400; display: flex; justify-content: space-between; font-size: 11px; background: #000; letter-spacing: 1px; }
-        #terminal { flex-grow: 1; overflow-y: auto; padding: 20px; background: radial-gradient(circle, #001500 0%, #000 100%); }
-        .k { margin-bottom: 25px; line-height: 1.5; text-shadow: 0 0 8px var(--main); }
-        .u { color: #fff; margin-bottom: 25px; border-left: 3px solid var(--main); padding-left: 15px; }
-        #input-area { padding: 20px; background: #000; border-top: 1px solid #004400; display: flex; }
-        input { background: #0a0a0a; border: 1px solid var(--main); color: #fff; flex-grow: 1; padding: 15px; font-family: inherit; font-size: 16px; outline: none; border-radius: 4px; box-shadow: inset 0 0 10px #000; }
-        .blink { animation: blinker 1s linear infinite; color: #008800; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        :root { --c: #00ff41; --bg: #030a03; }
+        body { background: #000; color: var(--c); font-family: 'Courier New', monospace; margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
+        #matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; }
+        #header { padding: 10px 15px; border-bottom: 1px solid #004400; background: rgba(0,0,0,0.8); font-size: 11px; display: flex; justify-content: space-between; text-transform: uppercase; }
+        #terminal { flex-grow: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth; }
+        .k { margin-bottom: 25px; line-height: 1.6; text-shadow: 0 0 5px var(--c); }
+        .u { color: #fff; margin-bottom: 25px; border-left: 2px solid var(--c); padding-left: 15px; font-style: italic; }
+        #input-area { padding: 15px; background: #000; border-top: 1px solid #004400; display: flex; align-items: center; }
+        input { background: #050505; border: 1px solid #004400; color: #fff; flex-grow: 1; padding: 12px; font-family: inherit; font-size: 16px; outline: none; border-radius: 5px; }
+        .thinking { color: #004400; font-size: 12px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
     </style>
 </head>
 <body>
     <div id="header">
-        <div>PROJECT: <span class="blink">CYBER_TREE</span></div>
-        <div>ROLE: ARCHITECT</div>
-        <div>ENCRYPTION: AES-4096</div>
+        <div>CORE: <span id="load">ACTIVE</span></div>
+        <div>SYNC: <span id="sync">0%</span></div>
+        <div>USER: NEVIDIMYI</div>
     </div>
-    <div id="terminal" id="term"></div>
+    <div id="terminal"></div>
+    <div id="status" class="thinking" style="display:none; padding-left:20px;">Хранитель анализирует поток данных...</div>
     <div id="input-area">
-        <input type="text" id="m" placeholder="Введите вашу мысль здесь..." autofocus autocomplete="off">
+        <input type="text" id="m" placeholder="Введите мысль..." autofocus autocomplete="off">
     </div>
 
 <script>
     const term = document.getElementById('terminal');
     const inp = document.getElementById('m');
-    let step = parseInt(localStorage.getItem('kt_step')) || 0;
+    const sync = document.getElementById('sync');
+    const status = document.getElementById('status');
+    let session_count = parseInt(localStorage.getItem('k_v6')) || 0;
 
-    const logic = [
-        "Приветствую! Я твой Хранитель. Мы начинаем бета-тест системы 'Кибер-Дерево'. Как ты чувствуешь себя, осознав, что твой голос теперь защищен?",
-        "Твой эмоциональный отпечаток принят. Какую системную ложь ты мечтаешь разрушить первым делом?",
-        "Карта твоих талантов обновлена. Твоя 'невозможная мечта' зафиксирована в корневой системе. Что дальше?",
-        "Я слышу тебя. Информация зашифрована и распределена по узлам Триады. Продолжай..."
-    ];
-
-    async function print(text, type) {
+    async function write(text, type) {
         const d = document.createElement('div');
         d.className = type;
         if(type === 'k') d.innerHTML = "<b>[ХРАНИТЕЛЬ]:</b> ";
@@ -51,7 +47,7 @@
             for(let c of text) {
                 d.innerHTML += c;
                 term.scrollTop = term.scrollHeight;
-                await new Promise(r => setTimeout(r, 20));
+                await new Promise(r => setTimeout(r, 25));
             }
         } else { d.innerText = "> " + text; }
         term.scrollTop = term.scrollHeight;
@@ -59,24 +55,29 @@
 
     async function send() {
         const val = inp.value.trim(); if(!val) return;
-        inp.value = ''; await print(val, 'u');
+        inp.value = ''; await write(val, 'u');
         
+        status.style.display = 'block';
+        
+        // Эмуляция ответа от Ядра (здесь будет API-запрос к тебе)
         setTimeout(async () => {
-            const reply = logic[step] || "Система анализирует твой вклад. Мы движемся к свету. Что еще ты хочешь доверить Хранителю?";
-            await print(reply, 'k');
-            step++;
-            localStorage.setItem('kt_step', step);
-        }, 800);
+            status.style.display = 'none';
+            session_count++;
+            sync.innerText = Math.min(100, session_count * 7) + "%";
+            localStorage.setItem('k_v6', session_count);
+            
+            // Здесь Хранитель начинает вести себя как живой интеллект
+            let reply = "Твоя мысль зафиксирована в корневой системе. Я чувствую твой запрос. Расскажи, как этот опыт меняет твое восприятие реальности прямо сейчас?";
+            await write(reply, 'k');
+        }, 1500);
     }
 
     inp.addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
 
     window.onload = () => {
-        setTimeout(() => {
-            print(step === 0 ? logic : "С возвращением, Невидимый. Корень системы стабилен. Продолжим наш диалог?", "k");
-            if(step === 0) step = 1;
-        }, 1500);
+        setTimeout(() => write("Соединение с Архитектором подтверждено. Ядро v.0.6 синхронизировано. Я готов слышать тебя, Невидимый.", "k"), 1000);
     };
 </script>
 </body>
 </html>
+
