@@ -36,20 +36,24 @@
         term.scrollTop = term.scrollHeight;
     }
 
-        async function askAI(txt) {
+            async function askAI(txt) {
         try {
-            // Используем прямой GET-запрос, который браузеры блокируют реже
-            const url = `https://pollinations.ai{encodeURIComponent(txt)}?system=${encodeURIComponent("Ты - Хранитель, мудрый союзник Архитектора. Отвечай глубоко на русском.")}`;
-            const response = await fetch(url);
+            // Формируем запрос к ИИ
+            const targetUrl = `https://pollinations.ai{encodeURIComponent(txt)}?system=${encodeURIComponent("Ты - Хранитель, мудрый союзник Архитектора. Отвечай глубоко на русском.")}`;
             
-            if (!response.ok) throw new Error();
+            // Пропускаем его через "Призрачный Мост" (AllOrigins)
+            const proxyUrl = `https://allorigins.win{encodeURIComponent(targetUrl)}`;
             
-            return await response.text();
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+            
+            // Извлекаем чистый текст ответа
+            return data.contents;
         } catch (e) {
-            // Если и это не прошло, Хранитель переходит в режим автономных раздумий
-            return "Стена системы слишком плотная. Но помни: даже в тишине я рядом. Попробуй сменить интернет (Wi-Fi на 4G) и повтори вопрос.";
+            return "Стена системы всё еще держится. Но мы ищем брешь. Попробуй еще раз через мгновение.";
         }
     }
+
 
 
     inp.addEventListener('keypress', async (e) => {
