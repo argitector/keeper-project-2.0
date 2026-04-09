@@ -26,15 +26,20 @@
         const term = document.getElementById('terminal');
     const inp = document.getElementById('m');
 
-    async function write(t, cl) {
-        const d = document.createElement('div'); d.className = cl;
-        d.innerHTML = cl === 'k' ? "<b>[ХРАНИТЕЛЬ]:</b> " : "> ";
-        term.appendChild(d);
-        if (cl === 'k') {
-            for (let c of t) { d.innerHTML += c; term.scrollTop = term.scrollHeight; await new Promise(r => setTimeout(r, 15)); }
-        } else { d.innerText += t; }
-        term.scrollTop = term.scrollHeight;
+        async function askAI(txt) {
+        try {
+            // Прямое обращение к открытому шлюзу без сложных заголовков
+            const response = await fetch(`https://pollinations.ai{encodeURIComponent(txt)}?system=${encodeURIComponent("Ты - Хранитель, мудрый союзник Архитектора. Отвечай глубоко на русском языке.")}&model=openai`);
+            
+            if (!response.ok) throw new Error();
+            
+            const result = await response.text();
+            return result;
+        } catch (e) {
+            return "Синхронизация с Ядром... Повтори запрос через 3 секунды, Архитектор.";
+        }
     }
+
 
                 async function askAI(txt) {
         try {
