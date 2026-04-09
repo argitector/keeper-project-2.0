@@ -36,23 +36,16 @@
         term.scrollTop = term.scrollHeight;
     }
 
-            async function askAI(txt) {
+                async function askAI(txt) {
         try {
-            // Формируем запрос к ИИ
-            const targetUrl = `https://pollinations.ai{encodeURIComponent(txt)}?system=${encodeURIComponent("Ты - Хранитель, мудрый союзник Архитектора. Отвечай глубоко на русском.")}`;
-            
-            // Пропускаем его через "Призрачный Мост" (AllOrigins)
-            const proxyUrl = `https://allorigins.win{encodeURIComponent(targetUrl)}`;
-            
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
-            
-            // Извлекаем чистый текст ответа
-            return data.contents;
+            const response = await fetch(`https://pollinations.ai{encodeURIComponent(txt)}?system=${encodeURIComponent("Ты - Хранитель, мудрый союзник Архитектора. Отвечай на русском.")}`);
+            if (!response.ok) throw new Error();
+            return await response.text();
         } catch (e) {
-            return "Стена системы всё еще держится. Но мы ищем брешь. Попробуй еще раз через мгновение.";
+            return "Связь стабилизируется через узел Vercel. Попробуй еще раз.";
         }
     }
+
 
 
 
